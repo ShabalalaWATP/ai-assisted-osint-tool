@@ -117,7 +117,6 @@ The AI-Assisted OSINT Tool is a powerful web application designed to streamline 
 
 The application features a **clean and modern user interface** designed with simplicity and usability in mind.
 
-=======
 - **[Bootstrap 5](https://getbootstrap.com/docs/5.0/)**: For responsive and modern UI components.
 - **[D3.js](https://d3js.org/)**: For creating dynamic, interactive data visualizations.
 - **D3 Cloud Plugin**: For generating the keyword word cloud.
