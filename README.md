@@ -1,6 +1,5 @@
 # AI-Assisted OSINT Tool
 
-=======
 ![Build Status](https://img.shields.io/github/actions/workflow/status/ShabalalaWATP/ai-assisted-osint-tool/ci.yml)
 ![License](https://img.shields.io/github/license/ShabalalaWATP/ai-assisted-osint-tool)
 
