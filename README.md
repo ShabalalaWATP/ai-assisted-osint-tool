@@ -7,7 +7,7 @@
 - [Introduction](#introduction)
 - [Features](#features)
 - [Technologies Used](#technologies-used)
-<<<<<<< HEAD
+
   - [Backend](#backend)
   - [Frontend](#frontend)
 - [UI Design](#ui-design)
@@ -35,14 +35,14 @@
     - [2. Environment Variables Not Loaded](#2-environment-variables-not-loaded)
     - [3. Missing Dependencies](#3-missing-dependencies)
     - [4. SpaCy Model Not Found](#4-spacy-model-not-found)
-=======
+
 - [UI Design](#ui-design)
 - [Prerequisites](#prerequisites)
 - [Installation and Setup](#installation-and-setup)
 - [Usage](#usage)
 - [Screenshots](#screenshots)
 - [Troubleshooting](#troubleshooting)
->>>>>>> 90e77ed009d6fecead81f8e894197e59686d3076
+
 - [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
