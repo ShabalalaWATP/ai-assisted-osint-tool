@@ -1,0 +1,6 @@
+flask
+requests
+vaderSentiment
+praw
+flask-cors
+spacy

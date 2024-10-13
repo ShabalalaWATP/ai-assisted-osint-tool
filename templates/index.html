@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI-Assisted OSINT Tool</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom Styles -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar-brand {
+            font-weight: bold;
+        }
+        .form-control:focus {
+            box-shadow: none;
+        }
+        .description {
+            margin-top: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .description h2 {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .description p {
+            font-size: 1.1rem;
+            color: #6c757d;
+            line-height: 1.6;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            background-color: #f1f1f1;
+        }
+        .result-title {
+            font-weight: bold;
+            font-size: 1.25rem;
+            color: #007bff;
+        }
+        .result-snippet {
+            font-size: 1rem;
+            color: #212529;
+        }
+        .badge-sentiment {
+            font-size: 0.9rem;
+        }
+        .entity-tag {
+            display: inline-block;
+            background-color: #e9ecef;
+            padding: 5px 10px;
+            margin: 2px 2px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+        }
+        .keyword-tag {
+            display: inline-block;
+            background-color: #d1ecf1;
+            padding: 5px 10px;
+            margin: 2px 2px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            color: #0c5460;
+        }
+        .section-title {
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        #wordCloud {
+            width: 100%;
+            height: 400px;
+        }
+    </style>
+    <!-- D3.js for Word Cloud -->
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <!-- D3 Cloud plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.5/d3.layout.cloud.min.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">AI-Assisted OSINT Tool</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Search Section -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="input-group mb-3">
+                    <input type="text" id="searchTerm" class="form-control" placeholder="Enter search term...">
+                    <button id="searchBtn" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Description Section -->
+        <div class="row description">
+            <div class="col-md-12">
+                <h2>Discover Insights with AI-Powered OSINT Analysis</h2>
+                <p>
+                    Our AI-Assisted OSINT Tool aggregates information from multiple sources such as Google, Reddit, and NewsAPI. It utilizes advanced natural language processing techniques for sentiment analysis, named entity recognition, and keyword extraction. Whether you're conducting research, monitoring trends, or performing competitive intelligence, this tool provides valuable insights to support your decision-making process.
+                </p>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner" class="text-center my-5" style="display:none;">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2">Fetching results...</p>
+        </div>
+
+        <!-- Results Section -->
+        <div class="mt-4" id="results"></div>
+    </div>
+
+    <!-- Bootstrap 5 JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <!-- jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- JavaScript code -->
+    <script>
+        $('#searchBtn').click(function() {
+            let query = $('#searchTerm').val().trim();
+            if (query === '') {
+                alert('Please enter a search term.');
+                return;
+            }
+
+            $('#results').empty();
+            $('#loadingSpinner').show();
+
+            $.ajax({
+                url: '/search',
+                method: 'GET',
+                data: { q: query },
+                success: function(data) {
+                    $('#loadingSpinner').hide();
+                    $('#results').empty();
+
+                    // Sentiment Distribution Chart Data
+                    let sentimentCounts = { Positive: 0, Negative: 0, Neutral: 0 };
+
+                    // Process results from each source
+                    ['google', 'reddit', 'newsapi'].forEach(source => {
+                        let sourceData = data[source];
+                        let sourceName = source.charAt(0).toUpperCase() + source.slice(1);
+
+                        $('#results').append(`<h3 class="section-title">${sourceName} Results</h3>`);
+                        if (sourceData.length === 0) {
+                            $('#results').append(`<p>No ${sourceName} results found.</p>`);
+                        } else {
+                            sourceData.forEach(item => {
+                                if (item.error) {
+                                    $('#results').append(`<p class="error-message">${item.error}</p>`);
+                                } else {
+                                    // Map sentiment label
+                                    const sentimentLabel = getSentimentLabel(item.sentiment_label);
+                                    sentimentCounts[sentimentLabel]++;
+
+                                    let content = item.snippet || item.content || '';
+                                    let link = item.link || item.url || '#';
+                                    let title = item.title || 'No Title';
+                                    let date = item.date || item.publishedAt ? new Date(item.publishedAt || item.date).toLocaleString() : '';
+                                    let extraInfo = '';
+
+                                    if (source === 'reddit') {
+                                        extraInfo = `<p><strong>Score:</strong> ${item.score}</p>`;
+                                    } else if (source === 'newsapi') {
+                                        extraInfo = `<p><strong>Published At:</strong> ${date}</p>`;
+                                    }
+
+                                    $('#results').append(`
+                                        <div class="card mb-3">
+                                            <div class="card-body">
+                                                <a href="${link}" target="_blank" class="result-title">${title}</a>
+                                                <p class="result-snippet">${content}</p>
+                                                ${extraInfo}
+                                                <p><strong>Sentiment:</strong>
+                                                    <span class="badge ${getSentimentBadgeClass(item.sentiment_label)} badge-sentiment">
+                                                        ${sentimentLabel} (${(item.sentiment_score * 100).toFixed(1)}%)
+                                                    </span>
+                                                </p>
+                                                <div><strong>Entities:</strong> ${item.entities.map(entity => `<span class="entity-tag">${entity[0]} (${entity[1]})</span>`).join(' ')}</div>
+                                                <div><strong>Keywords:</strong> ${item.keywords.map(keyword => `<span class="keyword-tag">${keyword}</span>`).join(' ')}</div>
+                                            </div>
+                                        </div>
+                                    `);
+                                }
+                            });
+                        }
+                    });
+
+                    // Display Sentiment Distribution Chart
+                    displaySentimentChart(sentimentCounts);
+
+                    // Display Word Cloud
+                    displayWordCloud(data.keywords);
+
+                },
+                error: function(err) {
+                    $('#loadingSpinner').hide();
+                    console.error(err);
+                    $('#results').html('<p class="error-message">An error occurred while fetching the results.</p>');
+                }
+            });
+        });
+
+        function getSentimentLabel(label) {
+            if (label === 'LABEL_2' || label === 'Positive') {
+                return 'Positive';
+            } else if (label === 'LABEL_0' || label === 'Negative') {
+                return 'Negative';
+            } else {
+                return 'Neutral';
+            }
+        }
+
+        function getSentimentBadgeClass(label) {
+            const sentiment = getSentimentLabel(label);
+            if (sentiment === 'Positive') {
+                return 'bg-success';
+            } else if (sentiment === 'Negative') {
+                return 'bg-danger';
+            } else {
+                return 'bg-secondary';
+            }
+        }
+
+        function displaySentimentChart(sentimentCounts) {
+            $('#results').prepend(`
+                <h3 class="section-title">Sentiment Distribution</h3>
+                <canvas id="sentimentChart" width="400" height="200"></canvas>
+            `);
+
+            let ctx = document.getElementById('sentimentChart').getContext('2d');
+            let sentimentChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Positive', 'Negative', 'Neutral'],
+                    datasets: [{
+                        data: [sentimentCounts.Positive, sentimentCounts.Negative, sentimentCounts.Neutral],
+                        backgroundColor: ['#198754', '#dc3545', '#6c757d']
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+        }
+
+        function displayWordCloud(keywords) {
+            $('#results').prepend(`
+                <h3 class="section-title">Keyword Word Cloud</h3>
+                <div id="wordCloud"></div>
+            `);
+
+            let layout = d3.layout.cloud()
+                .size([$('#wordCloud').width(), 400])
+                .words(keywords.map(function(d) {
+                    return {text: d.text, size: d.size * 10};
+                }))
+                .padding(5)
+                .rotate(function() { return ~~(Math.random() * 2) * 90; })
+                .fontSize(function(d) { return d.size; })
+                .on("end", drawWordCloud);
+
+            layout.start();
+
+            function drawWordCloud(words) {
+                d3.select("#wordCloud").append("svg")
+                    .attr("width", layout.size()[0])
+                    .attr("height", layout.size()[1])
+                  .append("g")
+                    .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
+                  .selectAll("text")
+                    .data(words)
+                  .enter().append("text")
+                    .style("font-size", function(d) { return d.size + "px"; })
+                    .style("fill", "#007BFF")
+                    .attr("text-anchor", "middle")
+                    .attr("transform", function(d) {
+                      return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                    })
+                    .text(function(d) { return d.text; });
+            }
+        }
+    </script>
+</body>
+</html>
