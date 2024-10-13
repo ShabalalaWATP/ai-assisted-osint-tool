@@ -3,7 +3,6 @@
 ![Build Status](https://img.shields.io/github/actions/workflow/status/ShabalalaWATP/ai-assisted-osint-tool/ci.yml)
 ![License](https://img.shields.io/github/license/ShabalalaWATP/ai-assisted-osint-tool)
 
->>>>>>> 90e77ed009d6fecead81f8e894197e59686d3076
 ## Table of Contents
 - [Introduction](#introduction)
 - [Features](#features)
