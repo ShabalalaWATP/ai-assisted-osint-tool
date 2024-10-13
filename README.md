@@ -48,34 +48,32 @@
 - [Acknowledgments](#acknowledgments)
 
 ## Introduction
-<<<<<<< HEAD
 
 The **AI-Assisted OSINT Tool** is a powerful web application designed to streamline the process of Open Source Intelligence (OSINT) gathering. By leveraging advanced AI technologies, it **aggregates and analyzes data from multiple sources**, providing users with insightful information to support research, trend monitoring, and decision-making processes.
 
 ## Features
 
-=======
 The AI-Assisted OSINT Tool is a powerful web application designed to streamline the process of Open Source Intelligence (OSINT) gathering. By leveraging advanced AI technologies, it aggregates and analyzes data from multiple sources, providing users with insightful information to support research, trend monitoring, and decision-making processes.
 
 ## Features
->>>>>>> 90e77ed009d6fecead81f8e894197e59686d3076
+
 - **Multi-Source Data Aggregation**: Fetches data from Google Custom Search, Reddit, and NewsAPI to provide a comprehensive view of the topic.
 - **Advanced Sentiment Analysis**: Utilizes state-of-the-art NLP models to assess the sentiment of fetched content.
 - **Named Entity Recognition (NER)**: Identifies and highlights entities such as people, organizations, and locations within the text.
 - **Keyword Extraction**: Extracts significant keywords using the YAKE algorithm for quick topic understanding.
 - **Data Visualization**:
-<<<<<<< HEAD
+
   - **Sentiment Distribution Chart**: Visual representation of the overall sentiment across the collected data.
   - **Keyword Word Cloud**: Displays the most frequent keywords in a visually engaging word cloud.
-=======
+
     - **Sentiment Distribution Chart**: Visual representation of the overall sentiment across the collected data.
     - **Keyword Word Cloud**: Displays the most frequent keywords in a visually engaging word cloud.
->>>>>>> 90e77ed009d6fecead81f8e894197e59686d3076
+
 - **User-Friendly Interface**: Clean and professional UI design for an optimal user experience.
 - **Asynchronous Operations**: Efficient data fetching and processing without blocking the user interface.
 
 ## Technologies Used
-<<<<<<< HEAD
+
 
 ### Backend
 - **Python 3.8+**
@@ -90,7 +88,7 @@ The AI-Assisted OSINT Tool is a powerful web application designed to streamline 
   - **Model Used**: `cardiffnlp/twitter-roberta-base-sentiment`
 - **YAKE**: Keyword extraction algorithm.
 - **NLTK**: For text processing and stopword handling.
-=======
+
 ### Backend
 - **Python 3.8+**
 - **[Flask](https://flask.palletsprojects.com/)**: Web framework for handling HTTP requests and serving HTML pages.
@@ -104,12 +102,12 @@ The AI-Assisted OSINT Tool is a powerful web application designed to streamline 
     - **Model Used**: `cardiffnlp/twitter-roberta-base-sentiment`
 - **[YAKE](https://github.com/LIAAD/yake)**: Keyword extraction algorithm.
 - **[NLTK](https://www.nltk.org/)**: For text processing and stopword handling.
->>>>>>> 90e77ed009d6fecead81f8e894197e59686d3076
+
 
 ### Frontend
 - **HTML5 and CSS3**
 - **JavaScript and jQuery**
-<<<<<<< HEAD
+
 - **Bootstrap 5**: For responsive and modern UI components.
 - **D3.js**: For creating dynamic, interactive data visualizations.
 - **D3 Cloud Plugin**: For generating the keyword word cloud.
@@ -127,7 +125,7 @@ The application features a **clean and modern user interface** designed with sim
 
 ## UI Design
 The application features a clean and modern user interface designed with simplicity and usability in mind.
->>>>>>> 90e77ed009d6fecead81f8e894197e59686d3076
+
 - **Navbar**: A fixed navigation bar with the application's name.
 - **Search Bar**: Prominently placed at the top for easy access.
 - **Description Section**: Provides users with an overview of the tool's capabilities.
@@ -135,7 +133,7 @@ The application features a clean and modern user interface designed with simplic
 - **Results Section**: Organized display of results from each source with expandable cards.
 - **Sentiment Labels**: Badges indicating the sentiment of each result.
 - **Entities and Keywords**: Highlighted within each result for quick reference.
-<<<<<<< HEAD
+
 - **Data Visualizations**:
   - **Sentiment Distribution Pie Chart**: Shows the proportion of positive, negative, and neutral sentiments.
   - **Keyword Word Cloud**: Visual representation of the most common keywords extracted from the data.
@@ -618,4 +616,4 @@ PRAW: For seamless Reddit API integration.
 Bootstrap: For responsive UI components.
 D3.js and Chart.js: For data visualization.
 Note: This tool is intended for educational and research purposes. Please use it responsibly and adhere to the terms of service of the APIs and data sources used.
->>>>>>> 90e77ed009d6fecead81f8e894197e59686d3076
+
